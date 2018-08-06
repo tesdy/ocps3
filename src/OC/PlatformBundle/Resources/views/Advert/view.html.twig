@@ -19,6 +19,19 @@
         {{ advert.content }}
     </div>
 
+    <h4>Niveaux requis : </h4>
+    {% for advertSkill in listAdvertSkills %}
+        {{ advertSkill.skill.name }} => {{ advertSkill.level }} <br>
+    {% endfor %}
+
+
+    <h4>Appartient aux catégories :</h4>
+    <p>
+        {% for category in advert.categories %}
+            {{ category.name }}{% if not loop.last %}, {% else %}.{% endif %}
+        {% endfor %}
+    </p>
+
     <p>
         <a href="{{ path('oc_platform_home') }}" class="btn btn-default">
             <i class="glyphicon glyphicon-chevron-left"></i>
@@ -36,10 +49,10 @@
 
 
     <p>
-        {% if listApplication %}
+    {% if listApplications %}
             <u>Liste des candidatures :</u> <br>
 
-            {% for application in listApplication %}
+        {% for application in listApplications %}
                 De {{ application.author }}, le {{ application.date|date("d/M/Y", "Europe/Paris") }} - {{ application.date|date("H") }}h{{ application.date|date("i") }} <br>
                 Message : <br>
                 {{ application.content }} <br><hr>

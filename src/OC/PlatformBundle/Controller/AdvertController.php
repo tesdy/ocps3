@@ -5,6 +5,7 @@
 namespace OC\PlatformBundle\Controller;
 
 use OC\PlatformBundle\Entity\Advert;
+use OC\PlatformBundle\Entity\AdvertSkill;
 use OC\PlatformBundle\Entity\Application;
 use OC\PlatformBundle\Entity\Image;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -48,8 +49,7 @@ class AdvertController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         // On récupère le repository
-        $repository = $em->getRepository('OCPlatformBundle:Advert')
-        ;
+        $repository = $em->getRepository('OCPlatformBundle:Advert');
 
         // On récupère l'entité correspondante à l'id $id
         $advert = $repository->find($id);
@@ -67,24 +67,30 @@ class AdvertController extends Controller
             throw new NotFoundHttpException("L'annonce ayant l'id " . $id . " n'existe pas.");
         }
 
-        $listApplication = $em
-        ->getRepository('OCPlatformBundle:Application')
-        ->findBy(
-            array('advert'=> $advert),
-            array('id'=> 'DESC')
-        );
+        $listApplications = $em
+            ->getRepository('OCPlatformBundle:Application')
+            ->findBy(
+                array('advert' => $advert),
+                array('id' => 'DESC')
+            );
+
+        $listAdvertSkills = $em
+            ->getRepository('OCPlatformBundle:AdvertSkill')
+            ->findBy(
+                array('advert' => $advert)
+            );
 
 
         // Le render ne change pas, on passait avant un tableau, maintenant un objet
         return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
             'advert' => $advert,
-            'listApplication' => $listApplication
+            'listApplications' => $listApplications,
+            'listAdvertSkills' => $listAdvertSkills
         ));
     }
 
     public function addAction(Request $request)
     {
-
         // Création de l'entité Advert
 //        $advert = new Advert();
 //        $advert->setTitle('Recherche développeur Symfony.');
@@ -98,56 +104,107 @@ class AdvertController extends Controller
 //
 //        // On lie l'image à l'annonce
 //        $advert->setImage($image);
-
-        // On récupère l'EntityManager
-        $em = $this->getDoctrine()->getManager();
-
-        // Étape 1 : On « persiste » l'entité
+//
+//        // On récupère l'EntityManager
+//        $em = $this->getDoctrine()->getManager();
+//
+//        // Étape 1 : On « persiste » l'entité
 //        $em->persist($advert);
-
-
-        //Création d'une première candidature
-        $application1 = new Application();
-        $application1->setAuthor('Toto');
-        $application1->setContent('Moi Moi Moi, je suis un gros (comique) bosseur ! Prenez moi !');
-
-        $application2 = new Application();
-        $application2->setAuthor('Martine');
-        $application2->setContent('Bonjour, je suis une fille et vous devriez me prendre, je suis gentille et très intelligente !');
-
+//        $em->flush();
+//
+//
+//        //Création d'une première candidature
+//        $application1 = new Application();
+//        $application1->setAuthor('Toto');
+//        $application1->setContent('Moi Moi Moi, je suis un gros (comique) bosseur ! Prenez moi !');
+//
+//        $application2 = new Application();
+//        $application2->setAuthor('Martine');
+//        $application2->setContent('Bonjour, je suis une fille et vous devriez me prendre, je suis gentille et très intelligente !');
+//
         $em = $this->getDoctrine()
             ->getManager();
         $repository = $em->getRepository('OCPlatformBundle:Advert');
-        $advert = $repository->find(2);
+        $advert = $repository->find(1);
+//
+//        $application1->setAdvert($advert);
+//        $application2->setAdvert($advert);
+//
+//        $em->persist($application1);
+//        $em->persist($application2);
+//
+//        // Étape 1 bis : si on n'avait pas défini le cascade={"persist"},
+//        // on devrait persister à la main l'entité $image
+//        // $em->persist($image);
+//
+//        // Étape 2 : On déclenche l'enregistrement
+//        $em->flush();
+//
+//        // Reste de la méthode qu'on avait déjà écrit
+//        if ($request->isMethod('POST')) {
+//            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
+//
+//            // Puis on redirige vers la page de visualisation de cette annonce
+//            return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
+//        }
 
-        $application1->setAdvert($advert);
-        $application2->setAdvert($advert);
+        $listSkills = $em->getRepository('OCPlatformBundle:Skill')->findAll();
 
-        $em->persist($application1);
-        $em->persist($application2);
-
-        // Étape 1 bis : si on n'avait pas défini le cascade={"persist"},
-        // on devrait persister à la main l'entité $image
-        // $em->persist($image);
-
-        // Étape 2 : On déclenche l'enregistrement
-        $em->flush();
-
-        // Reste de la méthode qu'on avait déjà écrit
-        if ($request->isMethod('POST')) {
-            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
-
-            // Puis on redirige vers la page de visualisation de cette annonce
-            return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
+        foreach ($listSkills as $skill) {
+            $advertSkill = new AdvertSkill();
+            $advertSkill->setAdvert($advert);
+            $advertSkill->setSkill($skill);
+            $advertSkill->setLevel('Expert');
+            $em->persist($advertSkill);
         }
 
-        // Si on n'est pas en POST, alors on affiche le formulaire
-        return $this->render('OCPlatformBundle:Advert:add.html.twig', array('advert' => $advert));
+        $em->flush();
+
+
+//
+//        // Si on n'est pas en POST, alors on affiche le formulaire
+        return $this->render('OCPlatformBundle:Advert:add.html.twig', array(
+            'advert' => $advert,
+        ));
     }
 
     public function editAction($id, Request $request)
     {
         // Ici, on récupérera l'annonce correspondante à $id
+
+        // Même mécanisme que pour l'ajout
+//        if ($request->isMethod('POST')) {
+//            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien modifiée.');
+//
+//            return $this->redirectToRoute('oc_platform_view', array('id' => 5));
+//        }
+//
+//        $advert = array(
+//            'title'   => 'Recherche développeur Symfony',
+//            'id'      => $id,
+//            'author'  => 'Alexandre',
+//            'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
+//            'date'    => new \Datetime()
+//        );
+//
+//
+
+        $em = $this->getDoctrine()->getManager();
+
+        $advert = $em->getRepository("OCPlatformBundle:Advert")->find($id);
+
+        if (null === $advert) {
+            throw new NotFoundHttpException("L'annonce ayant l'id " . $id . " n'existe pas.");
+
+        }
+
+        $listCategories = $em->getRepository("OCPlatformBundle:Category")->findAll();
+
+        foreach ($listCategories as $category) {
+            $advert->addCategory($category);
+        }
+
+        $em->flush();
 
         // Même mécanisme que pour l'ajout
         if ($request->isMethod('POST')) {
@@ -156,17 +213,11 @@ class AdvertController extends Controller
             return $this->redirectToRoute('oc_platform_view', array('id' => 5));
         }
 
-        $advert = array(
-            'title'   => 'Recherche développeur Symfony',
-            'id'      => $id,
-            'author'  => 'Alexandre',
-            'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-            'date'    => new \Datetime()
-        );
-
         return $this->render('OCPlatformBundle:Advert:edit.html.twig', array(
             'advert' => $advert
         ));
+
+
     }
 
     public function deleteAction($id)
