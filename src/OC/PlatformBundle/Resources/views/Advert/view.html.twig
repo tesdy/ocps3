@@ -37,7 +37,9 @@
 
     <p>
         {% if listApplication %}
-            <u>Liste des candidatures : (Les plus récents en premiers)</u> <br>
+            <u>Liste des candidatures (Les plus récents en premiers):</u> <br>
+
+            Sur sur sur ?
 
             {% for application in listApplication %}
                 De {{ application.author }}, le {{ application.date|date("d/M/Y", "Europe/Paris") }} - {{ application.date|date("H") }}h{{ application.date|date("i") }} <br>
