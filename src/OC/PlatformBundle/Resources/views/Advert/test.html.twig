@@ -1,0 +1,32 @@
+{% extends 'OCPlatformBundle::layout.html.twig' %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block ocplatform_body %}
+    <h3>Use of AdvertRepository</h3>
+    {% if listAdverts %}
+        <h4>MyFindAll</h4>
+
+        Utilisation basique d'un repository, ma fonction myFindAll() est la même que la fonction FindAll() de l'entity manager !
+        <br>
+        {% for advert in listAdverts %}
+            Auteur de l'annonce : {{ advert.author }} <br>
+            Contenu de l'annonce : {{ advert.content }}
+
+        {% endfor %}
+    {% endif %}
+
+    {% if oneAdvert %}
+        <h4>MyFindOne</h4>
+        Même si nous récupérons uniquement un seul résultat, il sera sous forme de tableau, il nous faut donc un 'for' pour pouvoir récupérer les data :
+        <br>
+        {% for advert in oneAdvert %}
+            Auteur de l'annonce ayant l'id {{ advert.id }} :  {{ advert.author }} <br>
+            Contenu de cette annonce : {{ advert.content }}
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}
+

@@ -2,6 +2,8 @@
 
 namespace OC\PlatformBundle\Repository;
 
+use Doctrine\ORM\QueryBuilder;
+
 /**
  * AdvertRepository
  *
@@ -10,4 +12,78 @@ namespace OC\PlatformBundle\Repository;
  */
 class AdvertRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    public function myFindAll()
+    {
+
+
+        // First Methode with EntityManager :
+//        $queryBuilder = $this->_em->createQueryBuilder()
+//            ->select('a')
+//            ->from($this->_entityName, 'a');
+
+        // Second method with the shortcut (best)
+//        $queryBuilder = $this->createQueryBuilder('a');
+//        $query=$queryBuilder->getQuery();
+//
+//        $results = $query->getResult();
+//        return $results;
+
+        // Second method, perfect shortcut
+        return $this->createQueryBuilder('a')->getQuery()->getResult();
+    }
+
+    public function myFindOne($id)
+    {
+
+        $qb = $this->createQueryBuilder('a');
+
+        $qb
+            ->where('a.id = :id')
+            ->setParameter('id', $id);
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+
+    }
+
+    public function findByAuthorAndDate($author, $year)
+    {
+
+        $qb = $this->createQueryBuilder('a');
+
+        $qb->where('a.author = :author')->setParameter('author', $author)
+            ->andWhere('a.date < :year')->setParameter('year', $year)
+            ->orderBy('a.date', 'DESC');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function whereCurrentYear(QueryBuilder $qb)
+    {
+
+        $qb
+            ->andWhere('a.date BETWEEN :start AND :end')
+            ->setParameter('start', new \DateTime(date('Y') . '-01-01'))
+            ->setParameter('end', new \DateTime(date('Y') . '-12-31'));
+    }
+
+    public function myFind()
+    {
+
+        $qb = $this->createQueryBuilder('a');
+
+        $qb
+            ->where('a.author = :author')
+            ->setParameter('author', 'CESI');
+
+        $this->whereCurrentYear($qb);
+
+        $qb->orderBy('a.date', 'DESC');
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

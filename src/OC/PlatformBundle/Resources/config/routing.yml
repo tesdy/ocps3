@@ -31,3 +31,8 @@ oc_platform_delete:
         _controller: OCPlatformBundle:Advert:delete
     requirements:
         id: \d+
+
+oc_platform_myFindAll:
+    path:     /myFindAll
+    defaults:
+        _controller: OCPlatformBundle:Advert:myFindAll

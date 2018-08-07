@@ -267,4 +267,21 @@ class AdvertController extends Controller
             'advert'=>$advert
         ));
     }
+
+    public function myFindAllAction()
+    {
+        $repository = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('OCPlatformBundle:Advert');
+
+        $listAdverts = $repository->myFindAll();
+        $oneAdvert = $repository->myFindOne(2);
+
+        return $this->render('OCPlatformBundle:Advert:test.html.twig', array(
+            'listAdverts' => $listAdverts,
+            'oneAdvert' => $oneAdvert
+        ));
+    }
+
 }
