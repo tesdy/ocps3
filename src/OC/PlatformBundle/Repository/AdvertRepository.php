@@ -65,11 +65,11 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
 
         $qb
             ->andWhere('a.date BETWEEN :start AND :end')
-            ->setParameter('start', new \DateTime(date('Y') . '-01-01'))
-            ->setParameter('end', new \DateTime(date('Y') . '-12-31'));
+            ->setParameter('start', new \DateTime(date('2017') . '-01-01'))
+            ->setParameter('end', new \DateTime(date('2017') . '-12-31'));
     }
 
-    public function myFind()
+    public function myFindByAuthor($author)
     {
 
         $qb = $this->createQueryBuilder('a');
@@ -85,5 +85,86 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
         return $qb
             ->getQuery()
             ->getResult();
+    }
+
+    public function myFindAllDQL()
+    {
+
+        // Select de base :
+        $query = $this->_em->createQuery('SELECT a FROM OCPlatformBundle:Advert a');
+
+        // Select avec un seul attribut :
+//        $query  = $this->_em->createQuery('SELECT a.title FROM OCPlatformBundle:Advert a');
+
+        // Select avec paramètres :
+//        $id = 2;
+//        $query  = $this->_em->createQuery('SELECT a FROM OCPlatformBundle:Advert a WHERE a.id = :id');
+//        $query->setParameter('id', $id);
+
+
+        // Select avec une jointure :
+//        $query = $this->_em->createQuery('SELECT a, u FROM OCPlatformBundle:Advert a JOIN a.user u WHERE u.age = 25');
+
+        // Select avec fonction :
+//        $query = $this->_em->createQuery('SELECT a FROM OCPlatformBundle:Advert a WHERE TRIM(a.author) = \'Alexandre\'');
+
+        // Utilisation de getSingleResult car la requête ne doit retourner qu'un seul résultat
+//        return $query->getSingleResult();
+
+        $result = $query->getResult();
+
+        return $result;
+
+    }
+
+    public function getAdverts()
+    {
+        $query = $this->createQueryBuilder('a')
+            // Jointure sur l'attribut image :
+            ->leftJoin('a.image', 'i')
+            ->addSelect('i')
+            // Jointure sur l'attribut catégories
+            ->leftJoin('a.categories', 'c')
+            ->addSelect('c')
+            // et nos petite conditions
+            ->orderBy('a.date', 'DESC')
+            ->getQuery();
+
+        return $query->getResult();
+    }
+
+
+    public function getAdvertWithApplications()
+    { // utilisation de jointure pour éviter la multiplication des requêtes à l'ouverture d'une page si nous faisions du : $entiteA->getEntiteB()
+
+        // Attention : On ne peut faire une jointure que si l'entité du FROM possède un attribut vers l'entité à joindre
+        // - Soit l'entité du FROM est propriétaire (non ici)
+        // - Soit la relation est bi-directionnelle (OUI ici) (Application->'Many To One'->Advert [inversedBy="applications"] && Advert->'One To Many'->Application [mappedBy="advert"])
+        $qb = $this
+            ->createQueryBuilder('a')
+            ->leftJoin('a.applications', 'app')// argument 1 : Attribut de l'entité principale sur lequel on fait la jointure ; argument 2 alias de l'entité jointe (arbitraire)
+            ->addSelect('app'); // on sélectionne également l'entité jointe via l'addSelect
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+
+    }
+
+    public function getAdvertWithCategories(array $categoryNames)
+    {
+
+        $qb = $this
+            ->createQueryBuilder('a')
+            ->innerJoin('a.categories', 'cat')
+            ->addSelect('cat');
+
+        $qb->where($qb->expr()->in('cat.name', '?1'));
+        $qb->setParameter('1', $categoryNames);
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+
     }
 }

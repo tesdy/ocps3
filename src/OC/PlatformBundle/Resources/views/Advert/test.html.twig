@@ -8,12 +8,13 @@
     <h3>Use of AdvertRepository</h3>
     {% if listAdverts %}
         <h4>MyFindAll</h4>
-
+        <!-- {{ dump(listAdverts) }} -->
         Utilisation basique d'un repository, ma fonction myFindAll() est la même que la fonction FindAll() de l'entity manager !
         <br>
+
         {% for advert in listAdverts %}
-            Auteur de l'annonce : {{ advert.author }} <br>
-            Contenu de l'annonce : {{ advert.content }}
+            Auteur de l'annonce {{ advert.id }}: {{ advert.author }} <br>
+            Contenu de l'annonce : {{ advert.content }} <br>
 
         {% endfor %}
     {% endif %}
@@ -27,6 +28,43 @@
             Contenu de cette annonce : {{ advert.content }}
         {% endfor %}
     {% endif %}
+
+    {% if dqlAdverts %}
+        <h4>Utilisation du DQL : Doctrine Query Language</h4>
+
+        {% for dqlAdvert in dqlAdverts %}
+            Date d'annonce {{ dqlAdvert.id }} : {{ dqlAdvert.date|date }} <br>
+        {% endfor %}
+    {% endif %}
+
+    <h3>Petit Exercice avec jointures et conditions :)</h3>
+
+    {% if advertByCat %}
+
+        Les annonces appartenant aux catégories {% for condition in conditions %}
+        <b>{{ condition }}</b> {% if not loop.last %} ou {% endif %} {% endfor %}<br>
+
+        {% for advcat in advertByCat %}
+            Par {{ advcat.author }} <br>
+            --> {{ advcat.content }}
+
+        {% endfor %}
+    {% else %}
+        Il n'y a aucune annonce concernant les catégories {% for condition in conditions %}
+        <b>{{ condition }}</b> {% if not loop.last %} ou {% endif %} {% endfor %}<br>
+    {% endif %}
+
+    <h4>Utilisation de Callbacks</h4>
+    <h5>1) PreUpdate</h5>
+    La date de l'annonce {{ oneAdvert.0.id }} était {{ oneAdvert.0.date|date }}, et après modification (en passant par un callback) : {{ oneAdvert.0.updateAt|date }}
+
+    <h5>2) PrePersist</h5>
+    Ce Callback ajoute 1 à l'attribut 'nbApplications' à chaque nouvelle candidature :
+    L'annonce {{ oneAdvert.0.id }} a maintenant {{ oneAdvert.0.nbApplications }} candidature(s)
+    <h5>3) PreRemove</h5>
+    Ce Callback ote 1 à à l'attribut 'nbApplications' à chaque candidature retirée :
+    L'annonce {{ oneAdvert.0.id }} a maintenant {{ oneAdvert.0.nbApplications }} candidature(s)
+
 
 {% endblock %}
 

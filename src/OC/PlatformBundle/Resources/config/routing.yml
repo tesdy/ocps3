@@ -36,3 +36,8 @@ oc_platform_myFindAll:
     path:     /myFindAll
     defaults:
         _controller: OCPlatformBundle:Advert:myFindAll
+
+oc_platform_slugtest:
+    path:     /slugTest
+    defaults:
+        _controller: OCPlatformBundle:Advert:testSlug
