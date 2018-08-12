@@ -3,6 +3,7 @@
 namespace OC\PlatformBundle\Repository;
 
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * AdvertRepository
@@ -117,7 +118,7 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
 
     }
 
-    public function getAdverts()
+    public function getAdverts($page, $nbPerPages)
     {
         $query = $this->createQueryBuilder('a')
             // Jointure sur l'attribut image :
@@ -126,11 +127,18 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
             // Jointure sur l'attribut catégories
             ->leftJoin('a.categories', 'c')
             ->addSelect('c')
+            // Jointure sur l'attribut advertSkills
+            ->leftJoin('a.advertSkills', 's')
+            ->addSelect('s')
             // et nos petite conditions
             ->orderBy('a.date', 'DESC')
             ->getQuery();
 
-        return $query->getResult();
+        $query
+            ->setFirstResult(($page - 1) * $nbPerPages)
+            ->setMaxResults($nbPerPages);
+
+        return new Paginator($query, true);
     }
 
 

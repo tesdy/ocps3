@@ -95,6 +95,10 @@ class Advert
      */
     private $slug;
 
+    /**
+     * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\AdvertSkill", mappedBy="advert")
+     */
+    private $advertSkills;
 
 
     public function __construct()
@@ -103,6 +107,7 @@ class Advert
         $this->date = new \Datetime();
         $this->categories = new ArrayCollection();
         $this->applications = new ArrayCollection();
+        $this->advertSkills = new ArrayCollection();
     }
 
 
@@ -427,5 +432,41 @@ class Advert
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * Add advertSkill.
+     *
+     * @param \OC\PlatformBundle\Entity\AdvertSkill $advertSkill
+     *
+     * @return Advert
+     */
+    public function addAdvertSkill(\OC\PlatformBundle\Entity\AdvertSkill $advertSkill)
+    {
+        $this->advertSkills[] = $advertSkill;
+
+        return $this;
+    }
+
+    /**
+     * Remove advertSkill.
+     *
+     * @param \OC\PlatformBundle\Entity\AdvertSkill $advertSkill
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeAdvertSkill(\OC\PlatformBundle\Entity\AdvertSkill $advertSkill)
+    {
+        return $this->advertSkills->removeElement($advertSkill);
+    }
+
+    /**
+     * Get advertSkills.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAdvertSkills()
+    {
+        return $this->advertSkills;
     }
 }

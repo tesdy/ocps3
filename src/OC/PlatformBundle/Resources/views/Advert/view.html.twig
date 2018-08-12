@@ -19,13 +19,24 @@
         {{ advert.content }}
     </div>
 
-    <h4>Niveaux requis : </h4>
-    {% for advertSkill in listAdvertSkills %}
-        {{ advertSkill.skill.name }} => {{ advertSkill.level }} <br>
+    {% if listAdvertSkills %}
+        <h4>Niveaux requis : </h4>
+        {% for advertSkill in listAdvertSkills %}
+            {{ advertSkill.skill.name }} => {{ advertSkill.level }} <br>
+        {% endfor %}
+    {% else %}
+        <i>Pas d'informations sur le niveau requis.</i><br>
+    {% endif %}
+
+    {% set break = false %}
+    {% for advCat in advert.categories if not break %}
+        {% if advCat %}
+            <h4>Appartient aux catégories :</h4>
+            {% set break = true %}
+        {% endif %}
+    {% else %}
+        <i>Pas de catégories liées à cette annonce.</i><br>
     {% endfor %}
-
-
-    <h4>Appartient aux catégories :</h4>
     <p>
         {% for category in advert.categories %}
             {{ category.name }}{% if not loop.last %}, {% else %}.{% endif %}
@@ -60,16 +71,20 @@
 
     <p>
     {% if listApplications %}
-            <u>Liste des candidatures :</u> <br>
+        <u>Liste des candidatures :</u> <br>
 
         {% for application in listApplications %}
-                De {{ application.author }}, le {{ application.date|date("d/M/Y", "Europe/Paris") }} - {{ application.date|date("H") }}h{{ application.date|date("i") }} <br>
-                Message : <br>
-                {{ application.content }} <br><hr>
+            De {{ application.author }}, le {{ application.date|date("d/M/Y", "Europe/Paris") }} - {{ application.date|date("H") }}h{{ application.date|date("i") }}
+            <br>
+            Message : <br>
+            {{ application.content }} <br>
+            <hr>
 
-            {% endfor %}
+        {% endfor %}
 
-        {% endif %}
+    {% else %}
+        <u>Aucune candidature sur cette offre actuellement</u> <br>
+    {% endif %}
     </p>
 
 {% endblock %}

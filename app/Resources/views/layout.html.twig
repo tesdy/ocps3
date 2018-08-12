@@ -11,53 +11,127 @@
     {% block stylesheets %}
         {# On charge le CSS de bootstrap depuis le site directement #}
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Modern+Antiqua" rel="stylesheet">
+
     {% endblock %}
 </head>
 
 <body>
-<div class="container">
-    <div id="header" class="jumbotron">
-        <h1>Ma plateforme d'annonces</h1>
-        <p>
-            Ce projet est propulsé par Symfony,
-            et construit grâce au MOOC OpenClassrooms et SensioLabs.
-        </p>
-        <p>
-            <a class="btn btn-primary btn-lg" href="https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2">
-                Participer au MOOC »
-            </a>
-        </p>
-    </div>
 
+<div id="header" class="jumbotron">
+    <h1>Ma plateforme d'annonces de développeur</h1>
+    <p>
+        Ce projet est propulsé par Symfony,
+        et construit grâce au MOOC OpenClassrooms et SensioLabs.
+    </p>
+    <p>
+    <div class="col-md-1 col-md-offset-10">
+        <a class="btn btn-primary btn-lg"
+           href="https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2">
+            Participer au MOOC »
+        </a>
+    </div>
+    </p>
+</div>
+<div class="container">
     <div class="row">
-        <div id="menu" class="col-md-3">
+        <div id="menu" class="col-md-4">
             <h3>Les annonces</h3>
             <ul class="nav nav-pills nav-stacked">
                 <li><a href="{{ path('oc_platform_home') }}">Accueil</a></li>
                 <li><a href="{{ path('oc_platform_add') }}">Ajouter une annonce</a></li>
             </ul>
 
-            <h4>Dernières annonces</h4>
+            <h3>Dernières annonces</h3>
             {{ render(controller("OCPlatformBundle:Advert:menu", {'limit': 3})) }}
         </div>
-        <div id="content" class="col-md-9">
+        <div id="content" class="col-md-8">
             {% block body %}
             {% endblock %}
         </div>
     </div>
-
-    <hr>
-
-    <footer>
-        <p>The sky's the limit © {{ 'now'|date('Y') }} and beyond.</p>
-    </footer>
 </div>
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<footer>
+    <div class="footer" id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2  col-md-2 col-sm-4 col-xs-6">
+                    <h3> Société </h3>
+                    <ul>
+                        <li><a href="#"> Espace presse </a></li>
+                        <li><a href="#"> Actualités </a></li>
+                        <li><a href="#"> Nos bureaux </a></li>
+                        <li><a href="#"> Nos valeurs </a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2  col-md-2 col-sm-4 col-xs-6">
+                    <h3> Services </h3>
+                    <ul>
+                        <li><a href="#"> Technique </a></li>
+                        <li><a href="#"> Assistance </a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2  col-md-2 col-sm-4 col-xs-6">
+                    <h3> Travailler avec nous </h3>
+                    <ul>
+                        <li><a href="#"> Candidature spontanée </a></li>
+                        <li><a href="#"> Nos offres d'emploi </a></li>
+                        <li><a href="#"> Nos équipes </a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2  col-md-2 col-sm-4 col-xs-6">
+                    <h3> Partenaires </h3>
+                    <ul>
+                        <li><a href="https://www.cesi-alternance.fr/"> CESI </a></li>
+                        <li><a href="http://www.ecofinance.fr/"> EcoFinance </a></li>
+                        <li><a href="https://www.toulouse.fr/"> Toulouse / Mairie de Toulouse </a></li>
+                        <li><a href="https://openclassrooms.com/fr/dashboard"> OpenClassRoom </a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3  col-md-3 col-sm-6 col-xs-12 ">
+                    <h3> Contacts </h3>
+                    <ul>
+                        <li>
+                            <div class="input-append newsletter-box text-center">
+                                <input type="text" class="full text-center" placeholder="Email">
+                                <button class="btn bg-gray" type="button"><a href="mailto:tesdy14@hotmail.fr"
+                                                                             class="bgblue"><i
+                                                class="glyphicon glyphicon-share-alt"></i> Ecrivez-nous <i
+                                                class="glyphicon glyphicon-envelope"></i></a></button>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="social">
+                        <li><a href="http://www.sitedemerde.com/" target="_blank"><i class=" fa fa-facebook"></i></a>
+                        </li>
+                        <li><a href="http://choixdemerde.fr/" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="http://www.google.fr" target="_blank"><i class="fa fa-google-plus"></i></a></li>
+                        <li><a href="http://www.youtube.com" target="_blank"><i class="fa fa-youtube"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <!--/.row-->
+        </div>
+        <!--/.container-->
+    </div>
+    <!--/.footer-->
+
+    <div class="footer-bottom">
+        <div class="container">
+            <p class="pull-left"> The sky is the limit</p>
+        </div>
+    </div>
+    <!--/.footer-bottom-->
+</footer>
+</body>
 
 {% block javascripts %}
     {# Ajoutez ces lignes JavaScript si vous comptez vous servir des fonctionnalités du bootstrap Twitter #}
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 {% endblock %}
-
-</body>
 </html>
