@@ -78,9 +78,9 @@ class Advert
     private $applications;
 
     /**
-     * @ORM\Column(name="update_at", type="datetime", nullable=true)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $updateAt;
+    private $updatedAt;
 
     /**
      * @ORM\Column(name="nb_applications", type="integer")
@@ -341,13 +341,13 @@ class Advert
     }
 
     /**
-     * Set updateAt.
+     * Set updatedAt.
      *
      * @param \DateTime|null $updateAt
      *
      * @return Advert
      */
-    public function setUpdateAt($updateAt = null)
+    public function setUpdatedAt($updateAt = null)
     {
         $this->updateAt = $updateAt;
 
@@ -355,11 +355,11 @@ class Advert
     }
 
     /**
-     * Get updateAt.
+     * Get updatedAt.
      *
      * @return \DateTime|null
      */
-    public function getUpdateAt()
+    public function getUpdatedAt()
     {
         return $this->updateAt;
     }
@@ -367,10 +367,10 @@ class Advert
     /**
      * @ORM\PreUpdate()
      */
-    public function updateDate()
+    public function updatedDate()
     {
 
-        $this->setUpdateAt(new \DateTime());
+        $this->setUpdatedAt(new \DateTime());
     }
 
     /**

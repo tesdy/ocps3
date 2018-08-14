@@ -12,7 +12,7 @@
     <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
 
     {% if advert.image is not null %}
-        <img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
+        <img src="{{ asset(advert.image.webPath) }}" alt="{{ advert.image.alt }}">
     {% endif %}
 
     <div class="well">

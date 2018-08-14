@@ -5,6 +5,7 @@
 namespace OC\PlatformBundle\Controller;
 
 use OC\PlatformBundle\Entity\Advert;
+use OC\PlatformBundle\Form\AdvertEditType;
 use OC\PlatformBundle\Form\AdvertType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -105,7 +106,6 @@ class AdvertController extends Controller
 
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-
             $em->persist($advert);
             $em->flush();
 
@@ -130,16 +130,22 @@ class AdvertController extends Controller
             throw new NotFoundHttpException("L'annonce ayant l'id " . $id . " n'existe pas.");
 
         }
+        $form = $this->createForm(AdvertEditType::class, $advert);
 
-        // Même mécanisme que pour l'ajout
-        if ($request->isMethod('POST')) {
-            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien modifiée.');
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            return $this->redirectToRoute('oc_platform_view', array('id' => 5));
+            $em->persist($advert);
+            $em->flush();
+
+            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien Modifiée.');
+
+            // Puis on redirige vers la page de visualisation de cette annonce
+            return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
         }
 
         return $this->render('OCPlatformBundle:Advert:edit.html.twig', array(
-            'advert' => $advert
+            'advert' => $advert,
+            'form' => $form->createView()
         ));
     }
 
